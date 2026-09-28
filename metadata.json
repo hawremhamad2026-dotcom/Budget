@@ -1,0 +1,8 @@
+{
+  "name": "Budget Tracker Pro",
+  "description": "A comprehensive personal finance and budget tracking app with safe-to-spend projections, burn rate analytics, and multi-month history.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
