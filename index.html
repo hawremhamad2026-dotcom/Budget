@@ -109,6 +109,9 @@
             <button onclick="switchTab('home')" id="nav-desktop-home" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-primary bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400 transition-colors">
                 <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
             </button>
+            <button onclick="switchTab('categories')" id="nav-desktop-categories" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
+                <i data-lucide="tag" class="w-5 h-5"></i> Spending by Name
+            </button>
             <button onclick="switchTab('charts')" id="nav-desktop-charts" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
                 <i data-lucide="pie-chart" class="w-5 h-5"></i> Analytics
             </button>
@@ -200,6 +203,39 @@
                         <span class="text-sm text-indigo-100">days</span>
                         <div class="mx-2 w-px h-6 bg-white/30"></div>
                         <p class="font-semibold" id="safeCustomLimit">0 IQD</p>
+                    </div>
+                </div>
+
+                <!-- DASHBOARD SPENDING BY TRANSACTION NAME CARD -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 mb-8 transition-colors">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <div class="p-2 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl text-primary dark:text-indigo-400">
+                                    <i data-lucide="tag" class="w-5 h-5"></i>
+                                </div>
+                                <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">Total Spent by Transaction Name</h3>
+                                <span class="bg-indigo-100 text-primary dark:bg-indigo-950 dark:text-indigo-300 text-xs px-2 py-0.5 rounded-full font-semibold">e.g. Taxi, Food</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">See your exact cumulative expenditure grouped by each transaction name.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="inline-flex bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg text-xs font-medium">
+                                <button type="button" id="dashCatScopeMonthBtn" onclick="setCategoryScope('month')" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm transition-all font-semibold">This Month</button>
+                                <button type="button" id="dashCatScopeAllBtn" onclick="setCategoryScope('all')" class="px-2.5 py-1 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all font-semibold">All Time</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instant Search for Transaction Name -->
+                    <div class="mt-4 mb-4 relative">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none"></i>
+                        <input type="text" id="dashCatSearchInput" oninput="handleDashCatSearch(this.value)" placeholder="Search any expense name (e.g. type 'Taxi' or 'Food')..." class="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary">
+                    </div>
+
+                    <!-- Grid of Top Categories/Transaction Names -->
+                    <div id="dashCategoriesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <!-- Populated dynamically: Shows Taxi: 45,000 IQD, Food: 60,000 IQD, etc. -->
                     </div>
                 </div>
 
@@ -301,15 +337,15 @@
                 </div>
             </div>
 
-            <!-- CHARTS TAB -->
-            <div id="tab-charts" class="tab-content max-w-5xl mx-auto space-y-8">
+            <!-- SPENDING BY NAME (CATEGORIES) TAB -->
+            <div id="tab-categories" class="tab-content max-w-5xl mx-auto space-y-8">
                 <!-- SPENDING BY TRANSACTION NAME SECTION -->
                 <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6 transition-colors">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                         <div>
                             <div class="flex items-center gap-2">
                                 <div class="p-2 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl text-primary dark:text-indigo-400">
-                                    <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                                    <i data-lucide="tag" class="w-5 h-5"></i>
                                 </div>
                                 <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100">Spending by Transaction Name</h3>
                             </div>
@@ -382,7 +418,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <!-- CHARTS TAB -->
+            <div id="tab-charts" class="tab-content max-w-5xl mx-auto space-y-8">
                 <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 p-6 transition-colors">
                     <h3 class="font-bold text-lg text-slate-800 dark:text-slate-100 mb-2">Monthly Burn Rate</h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Cumulative spending day-by-day for the selected month.</p>
@@ -464,23 +503,27 @@
 
         <!-- Mobile Bottom Nav -->
         <nav class="md:hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 fixed bottom-0 w-full z-20 pb-safe transition-colors">
-            <div class="flex justify-around">
-                <button onclick="switchTab('home')" id="nav-mobile-home" class="flex-1 py-3 flex flex-col items-center gap-1 text-primary relative">
-                    <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
-                    <span class="text-[10px] font-medium">Home</span>
+            <div class="flex justify-around items-center">
+                <button onclick="switchTab('home')" id="nav-mobile-home" class="flex-1 py-2.5 flex flex-col items-center gap-0.5 text-primary relative">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span class="text-[9px] font-medium">Home</span>
+                </button>
+                <button onclick="switchTab('categories')" id="nav-mobile-categories" class="flex-1 py-2.5 flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500">
+                    <i data-lucide="tag" class="w-5 h-5"></i>
+                    <span class="text-[9px] font-medium">By Name</span>
                 </button>
                 <div class="flex-1 relative flex justify-center">
-                    <button onclick="openModal('addTxModal')" class="absolute -top-6 bg-primary hover:bg-indigo-700 text-white p-4 rounded-full shadow-lg shadow-indigo-200 dark:shadow-none transition-transform transform active:scale-95 border-4 border-white dark:border-slate-905">
-                        <i data-lucide="plus" class="w-6 h-6"></i>
+                    <button onclick="openModal('addTxModal')" class="absolute -top-5 bg-primary hover:bg-indigo-700 text-white p-3.5 rounded-full shadow-lg shadow-indigo-200 dark:shadow-none transition-transform transform active:scale-95 border-4 border-white dark:border-slate-900">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
                     </button>
                 </div>
-                <button onclick="switchTab('charts')" id="nav-mobile-charts" class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500">
-                    <i data-lucide="pie-chart" class="w-6 h-6"></i>
-                    <span class="text-[10px] font-medium">Charts</span>
+                <button onclick="switchTab('charts')" id="nav-mobile-charts" class="flex-1 py-2.5 flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500">
+                    <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                    <span class="text-[9px] font-medium">Charts</span>
                 </button>
-                <button onclick="switchTab('settings')" id="nav-mobile-settings" class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500">
-                    <i data-lucide="settings" class="w-6 h-6"></i>
-                    <span class="text-[10px] font-medium">Settings</span>
+                <button onclick="switchTab('settings')" id="nav-mobile-settings" class="flex-1 py-2.5 flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    <span class="text-[9px] font-medium">Settings</span>
                 </button>
             </div>
         </nav>
@@ -756,7 +799,7 @@
             document.getElementById(`tab-${tabId}`).classList.add('active');
             
             // Update styling desktop
-            ['home', 'charts', 'settings'].forEach(id => {
+            ['home', 'categories', 'charts', 'settings'].forEach(id => {
                 const el = document.getElementById(`nav-desktop-${id}`);
                 if(el) {
                     if(id === tabId) el.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium text-primary bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400 transition-colors";
@@ -764,11 +807,12 @@
                 }
                 const mb = document.getElementById(`nav-mobile-${id}`);
                 if(mb) {
-                    if(id === tabId) mb.className = "flex-1 py-3 flex flex-col items-center gap-1 text-primary relative dark:text-indigo-450";
-                    else mb.className = "flex-1 py-3 flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500";
+                    if(id === tabId) mb.className = "flex-1 py-2.5 flex flex-col items-center gap-0.5 text-primary relative dark:text-indigo-450";
+                    else mb.className = "flex-1 py-2.5 flex flex-col items-center gap-0.5 text-slate-400 dark:text-slate-500";
                 }
             });
 
+            if (tabId === 'categories') renderCategoryBreakdown();
             if (tabId === 'charts') renderCharts();
         };
 
@@ -1038,6 +1082,71 @@
 
             // Render Transactions List & Grouping by Name
             renderTransactionList();
+            renderDashCategories();
+        }
+
+        window.handleDashCatSearch = (query) => {
+            renderDashCategories();
+        };
+
+        function renderDashCategories() {
+            const grid = document.getElementById('dashCategoriesGrid');
+            if (!grid) return;
+            const searchInput = document.getElementById('dashCatSearchInput');
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            
+            const data = getCategorySpending(categoryScope, query);
+
+            const mBtn = document.getElementById('dashCatScopeMonthBtn');
+            const aBtn = document.getElementById('dashCatScopeAllBtn');
+            if (mBtn && aBtn) {
+                if (categoryScope === 'month') {
+                    mBtn.className = "px-2.5 py-1 rounded-md bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm transition-all font-semibold";
+                    aBtn.className = "px-2.5 py-1 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all font-semibold";
+                } else {
+                    aBtn.className = "px-2.5 py-1 rounded-md bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm transition-all font-semibold";
+                    mBtn.className = "px-2.5 py-1 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all font-semibold";
+                }
+            }
+
+            if (data.list.length === 0) {
+                grid.innerHTML = `<div class="col-span-full p-6 text-center text-slate-400 dark:text-slate-500 text-xs italic bg-slate-50 dark:bg-slate-950/40 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+                    No matching categories found${query ? ` for "${escapeHtml(query)}"` : ''}.
+                </div>`;
+                return;
+            }
+
+            grid.innerHTML = data.list.map((cat, idx) => {
+                const color = cat.color;
+                const isTaxi = cat.name.toLowerCase() === 'taxi';
+                return `
+                <div onclick="openCategoryDetailModal('${escapeHtml(cat.key)}', '${categoryScope}')" class="p-4 rounded-xl border ${isTaxi ? 'border-indigo-300 dark:border-indigo-800 ring-2 ring-indigo-500/20 bg-indigo-50/40 dark:bg-indigo-950/30' : 'border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50'} hover:bg-slate-100/70 dark:hover:bg-slate-800/50 cursor-pointer transition-all flex flex-col justify-between group shadow-2xs">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${color}"></span>
+                                <span class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">${isTaxi ? '🚖 ' : ''}${escapeHtml(cat.name)}</span>
+                            </div>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 shadow-2xs">${cat.count} ${cat.count === 1 ? 'entry' : 'entries'}</span>
+                        </div>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <span class="text-xl font-bold text-slate-900 dark:text-white">${fmtCurrency(cat.total)}</span>
+                            <span class="text-xs font-semibold text-primary dark:text-indigo-400">${cat.percentage.toFixed(1)}%</span>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-300" style="width: ${Math.min(cat.percentage, 100)}%; background-color: ${color}"></div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 flex justify-between">
+                            <span>Avg ${fmtCurrency(cat.total / (cat.count || 1))}</span>
+                            <span class="group-hover:text-primary dark:group-hover:text-indigo-400 transition-colors">View entries →</span>
+                        </p>
+                    </div>
+                </div>`;
+            }).join('');
+
+            lucide.createIcons();
         }
 
         window.setTxViewMode = (mode) => {
@@ -1258,6 +1367,11 @@
 
         window.setCategoryScope = (scope) => {
             categoryScope = scope;
+            renderCategoryBreakdown();
+            renderDashCategories();
+        };
+
+        window.renderCategoryBreakdown = () => {
             renderCategoryBreakdown();
         };
 
@@ -1649,9 +1763,27 @@
         function loadLocalData() {
             const local = localStorage.getItem('budgetTrackerData');
             if (local) {
-                appData = JSON.parse(local);
-                document.getElementById('globalBaseInput').value = appData.globalBase || 160000;
+                try {
+                    appData = JSON.parse(local);
+                    document.getElementById('globalBaseInput').value = appData.globalBase || 160000;
+                } catch(e) { console.error(e); }
             }
+
+            // If empty, pre-seed initial demo transactions so the user immediately sees Taxi and other categories!
+            if (!appData.transactions || appData.transactions.length === 0) {
+                const now = new Date();
+                const mKey = getMonthKey(now);
+                appData.transactions = [
+                    { id: 'demo-1', amount: 15000, desc: 'Taxi', date: new Date(now.getTime() - 1000 * 3600 * 2).toISOString(), monthKey: mKey },
+                    { id: 'demo-2', amount: 18000, desc: 'Taxi', date: new Date(now.getTime() - 1000 * 3600 * 26).toISOString(), monthKey: mKey },
+                    { id: 'demo-3', amount: 12000, desc: 'Taxi', date: new Date(now.getTime() - 1000 * 3600 * 50).toISOString(), monthKey: mKey },
+                    { id: 'demo-4', amount: 28000, desc: 'Food', date: new Date(now.getTime() - 1000 * 3600 * 6).toISOString(), monthKey: mKey },
+                    { id: 'demo-5', amount: 32000, desc: 'Food', date: new Date(now.getTime() - 1000 * 3600 * 30).toISOString(), monthKey: mKey },
+                    { id: 'demo-6', amount: 45000, desc: 'Groceries', date: new Date(now.getTime() - 1000 * 3600 * 72).toISOString(), monthKey: mKey }
+                ];
+                localStorage.setItem('budgetTrackerData', JSON.stringify(appData));
+            }
+
             updateDashboard();
         }
 
